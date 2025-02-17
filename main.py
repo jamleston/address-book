@@ -129,18 +129,10 @@ class AddressBook(UserDict):
             return 'we dont have this number'
     
     def __str__(self):
-        keys = list(self.data.keys())
-        counter = 0
-        result = ''
-        while counter < len(keys)-1:
-            person_data = self.data[keys[counter]]
-            counter +=1
-            new_str = f'{person_data}\n'
-            result += new_str
-        else:
-            person_data = self.data[keys[counter]]
-            new_str = f'{person_data}'
-            result += new_str
+        if not self.data:
+            return "No contacts in the address book."
+
+        result = '\n'.join(str(record) for record in self.data.values())
         return result
     
     def get_upcoming_birthdays(self, days=7):
@@ -209,9 +201,9 @@ def input_error_phone(func):
 def input_error(func):
     def inner(*args, **kwargs):
         try:
-            func(*args, **kwargs)
-        except (TypeError, ValueError, IndexError, KeyError):
-            print(f"for function {func.__name__}: wrong input")
+            return func(*args, **kwargs)
+        except (TypeError, ValueError, IndexError, KeyError) as e:
+            return f"Error: {e}"
     return inner
 
 def parse_input(user_input):
@@ -325,6 +317,6 @@ if __name__ == "__main__":
 #  add john 12345
 #  add jane 987654
 #  add-birthday john 01.01.2001
-#  add-birthday jane 02.02.2001
+#  hello
 #  show-birthday john
 #  birthdays
